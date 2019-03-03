@@ -57,7 +57,7 @@ class BjlHome
     private $OpenDX; // 游戏开点大小 下标 0=>闲2=>和 4=>庄
     private $OpenDui; // 1=>闲对  3=>庄对
     private $OpenDian = array(); // 开点最终结果
-    private $Pei = array(1,11,8,11,1); // 赔率
+    private $Pei = array(1,9,9,9,1); // 赔率
     private $CardCount = 416; // 牌的数量
     private $GameNum = 1; // 游戏的期数
     private $AllCards = array(1.1,2.1,3.1,4.1,5.1,6.1,7.1,8.1,9.1,10.1,11.1,12.1,13.1,
@@ -167,6 +167,7 @@ class BjlHome
         );
         // 加入房间 发送房间信息给自己
         sendToOne(723, $return23, $client_id);
+        echo "get the num:".$this->GameNum;
         sendToOne(775, getOrder($this->GameNum), $client_id);
         sendToAll(784, $return84, $this->PeopleLines);
     }
@@ -279,11 +280,12 @@ class BjlHome
         $arr = explode(",",$codes);
         $dianzhuang = (intval($arr[2])+intval($arr[3]))%10;
         $dianxian = (intval($arr[0])+intval($arr[1]))%10;
+        //    private $OpenDX; // 游戏开点大小 下标 0=>闲2=>和 4=>庄
         if($dianzhuang>$dianxian){
-            $win = 2;
+            $win = 4;
         }
         if($dianzhuang==$dianxian){
-            $win = 4;
+            $win = 2;
         }
         if($dianzhuang<$dianxian){
             $win = 0;

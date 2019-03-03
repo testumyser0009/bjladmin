@@ -18,7 +18,7 @@ class Index extends Controller
     private $appsecret = "15b02b815da724436965b4d451481d59";
     private $url = "";
     //微信授权
-    public function wxLogin(){
+    public function wxLogin2(){
         $weihu = getConfig(1);
         if ($weihu == 0){
             echo "<h1>系统维护中。。。。</h1>";
@@ -36,9 +36,55 @@ class Index extends Controller
         exit;
         //微信授权
     }
-    
+    public function wxLogin(){
+
+        if(isset($_POST['username'])&&isset($_POST['password'])){
+            $password = md5($_POST['password']);
+            $username = $_POST['username'];
+            $info = db('users') -> where("password='{$password}' and username='{$username}'") -> find();
+            if(empty($info )){
+                $arr['msg'] = "登陆失败";
+                $arr['status'] = 0;
+                echo  json_encode($arr);die();
+            }else{
+                $arr['msg'] = getConfig(33)."?code=".$info['openid'];
+                $arr['status'] = 1;
+                echo  json_encode($arr);die();
+            }
+
+        }
+        return $this->fetch();
+    }
+    public  function getUser(){
+        if(isset($_GET['code'])&&!empty($_GET['code'])){
+            $info = db('users') -> where("openid='{$_GET['code']}'") -> find();
+          /*  if (!$info){
+                $insert = array(
+                    'openid'    => $_GET['code']['openid'],
+                    'nickname'  => $user['nickname'],
+                    'sex'       => $user['sex'],
+                    'headurl'   => $user['headimgurl'],
+                    'user_money'=> 10,
+                );
+                db("users")->insertGetId($insert);
+            }*/
+
+            send(1, $info, $info['id']);
+            $user ['openid'] =$info['openid'];
+            $user ['nickname'] =$info['nickname'];
+            $user ['sex'] =$info['sex'];
+            $user ['language'] ="zh";
+            $user ['city'] ="濮阳";
+            $user ['province'] ="濮阳";
+            $user ['headimgurl'] ="oiI2uuD7OF5F1IKz71BWYHelyN1s";
+            $user ['unionid'] =$info['openid'];
+            return json($user);
+        }else{
+            return json("登陆失败");
+        }
+    }
     //获取用户信息
-    public function getUser(){
+    public function getUser2(){
         /**
         $weixin = new Wechat(array('appid'=>$this->appid,'appsecret'=>$this->appsecret,'token'=>'1123123'));
         $json = $weixin->getOauthAccessToken();//获取session_token,openid

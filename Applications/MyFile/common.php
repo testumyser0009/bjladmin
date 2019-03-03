@@ -177,7 +177,7 @@ function getRake(){
  * @return unknown
  */
 function getOrder($num){
-    $sql = "SELECT `dian`,`is_double` FROM `app_dian` WHERE num={$num} ORDER BY add_time desc LIMIT 85";
+    $sql = "SELECT `dian`,`is_double` FROM `app_dian` WHERE num>{$num} ORDER BY add_time desc LIMIT 20";
     $order = db()->query($sql);
     return $order;
 }
